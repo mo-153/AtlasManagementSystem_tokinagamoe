@@ -16,6 +16,8 @@ class Subjects extends Model
     ];
 
     public function users(){
-        return;// リレーションの定義
+         return $this->belongsToMany(User::class);// リレーションの定義
+        //  →User::classとは=App/Models/Userになる
+        //  →ユーザーと科目のリレーション(多対多)を記述するため
     }
 }

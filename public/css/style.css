@@ -6,6 +6,15 @@
   padding: 0;
 }
 
+/* 新規登録フォームのバリデーションメッセージ */
+.error {
+  position: relative;
+  top: -65px;
+  white-space: nowrap;
+  font-size: 12px;
+  color: red;
+}
+
 /* body */
 .all_content {
   background: #ECF1F6;
