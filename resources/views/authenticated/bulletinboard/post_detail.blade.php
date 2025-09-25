@@ -7,8 +7,14 @@
           <div>
           </div>
           <div>
+            @if(Auth::id() === $post->user_id)
+            <!-- ↑Auth::id()でログインユーザーのユーザーIDを取得
+              ===で同じユーザーかどうか確認
+              $post->user_idで投稿者のID
+               ↑投稿者のIDが自分と同じか確認して編集、削除ボタンを表示 -->
             <span class="edit-modal-open" post_title="{{ $post->post_title }}" post_body="{{ $post->post }}" post_id="{{ $post->id }}">編集</span>
             <a href="{{ route('post.delete', ['id' => $post->id]) }}">削除</a>
+            @endif
           </div>
         </div>
 
@@ -18,7 +24,8 @@
             <span>{{ $post->user->under_name }}</span>
             さん
           </p>
-          <span class="ml-5">{{ $post->created_at }}</span>
+          <span class="ml-5">{{ $post->created_at ->format('Y-m-d H:i')}}</span>
+          <!-- ↑投稿日時の表示 -->
         </div>
         <div class="detsail_post_title">{{ $post->post_title }}</div>
         <div class="mt-3 detsail_post">{{ $post->post }}</div>
@@ -51,6 +58,8 @@
     </div>
   </div>
 </div>
+
+<!-- ↓編集モーダル -->
 <div class="modal js-modal">
   <div class="modal__bg js-modal-close"></div>
   <div class="modal__content">
