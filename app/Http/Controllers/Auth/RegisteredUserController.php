@@ -90,8 +90,8 @@ class RegisteredUserController extends Controller
         $validated = $request->validate([
             'over_name' => 'required|string|max:10',
             'under_name' => 'required|string|max:10',
-            'over_name_kana' => 'required|string|regex:/^[ア-ケー]+$/u|max:30',
-            'under_name_kana' => 'required|string|regex:/^[ア-ケー]+$/u|max:30',
+            'over_name_kana' => 'required|string|regex:/^[ァ-ヶー]+$/u|max:30',
+            'under_name_kana' => 'required|string|regex:/^[ァ-ヶー]+$/u|max:30',
             'mail_address' =>'required|email|unique:users,mail_address|max:100',
             'sex' => 'required|in:1,2,3',
             'birth_day'=> 'required|after_or_equal:2000-01-01|before_or_equal:today',// →old_year/old_month/old_dayをまとめて「birth_day」としている
