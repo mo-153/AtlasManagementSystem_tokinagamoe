@@ -15,6 +15,40 @@ use Auth;
 
 class PostsController extends Controller
 {
+
+    public function store(Request $request){
+
+        // バリデーションルール
+        // ・post_category_id
+        // →必須項目、登録されているサブカテゴリか
+        // ・post_title
+        // →必須項目、文字列型、最大100文字
+        // ・post_body
+        // →必須項目、文字列型、最大2000文字
+
+
+        $validated = $request->validate([
+            'post_category_id' => 'required|',
+            'post_title' => 'required|string|max:100',
+            'post_body' => 'required|string|max:2000',
+        ],
+
+        // バリデーションメッセージ
+        [
+            'post_category_id.required' => 'カテゴリーは必ず入力してください。',
+
+            'post_title' => 'タイトルは必ず入力してください',
+            'post_title' => 'タイトルは100文字以内で入力してください',
+
+            'post_body' => '投稿内容は必ず入力してください',
+            'post_body' => '投稿内容は2000文字以内で入力してください',
+        ]);
+    }
+
+
+
+
+
     public function show(Request $request){
         $posts = Post::with('user', 'postComments')->get();
         $categories = MainCategory::get();
