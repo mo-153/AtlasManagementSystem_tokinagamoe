@@ -1,3 +1,6 @@
+// 掲示板関連のJSファイル
+
+
 $(function () {
   $('.main_categories').click(function () {
     var category_id = $(this).attr('category_id');
@@ -48,7 +51,7 @@ $(function () {
     });
   });
 
-  $('.edit-modal-open').on('click',function(){
+  $('.edit-modal-open').on('click', function () {
     $('.js-modal').fadeIn();
     var post_title = $(this).attr('post_title');
     var post_body = $(this).attr('post_body');
@@ -62,5 +65,9 @@ $(function () {
     $('.js-modal').fadeOut();
     return false;
   });
+});
 
+// 投稿削除
+$(document).on("click", "posts-destroy", function (e) {
+  if (!confirm("削除してよろしいですか？"));
 });

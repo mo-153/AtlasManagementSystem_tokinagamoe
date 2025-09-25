@@ -193,7 +193,39 @@ li {
   justify-content: space-between;
 }
 
+.post_edit {
+  position: relative;
+  right: 60px;
+  padding: 5px 15px 5px 15px;
+  background-color: #3366FF;
+  color: #FFF;
+  border-radius: 5px;
+  border: #3366FF;
+  font-size: small;
+}
+
+.post_delete {
+  position: relative;
+  top: -30px;
+  padding: 5px 15px 5px 15px;
+  background-color: #FF3300;
+  color: #FFF;
+  border-radius: 5px;
+  border: #FF3300;
+  font-size: small;
+
+}
+
 /* 掲示板 コメント */
+.comment_error {
+  position: relative;
+  top: -370px;
+  white-space: nowrap;
+  font-size: 12px;
+  color: red;
+
+}
+
 .comment_container {
   background: #FFF;
 }

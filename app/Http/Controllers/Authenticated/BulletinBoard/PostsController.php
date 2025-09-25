@@ -103,12 +103,29 @@ class PostsController extends Controller
         Post::findOrFail($id)->delete();
         return redirect()->route('post.show');
     }
+
+
+
     public function mainCategoryCreate(Request $request){
         MainCategory::create(['main_category' => $request->main_category_name]);
         return redirect()->route('post.input');
     }
 
     public function commentCreate(Request $request){
+
+        // バリデーションルール
+        // ・comment
+        // →必須項目、250文字、文字列型
+
+        $validated = $request->validate([
+            'comment' => 'required|max:250|string',
+        ],
+        [
+            'comment.required' =>'コメントは入力必須です。',
+            'comment.max' => '250文字以内で入力してください。',
+        ]);
+
+
         PostComment::create([
             'post_id' => $request->post_id,
             'user_id' => Auth::id(),
