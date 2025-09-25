@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Post extends Model
 {
-    const UPDATED_AT = null;
-    const CREATED_AT = null;
+    // const UPDATED_AT = null;
+    // const CREATED_AT = null;
 
     protected $fillable = [
         'user_id',
@@ -24,17 +24,17 @@ class Post extends Model
     }
 
     public function subCategories(){
-        // リレーションの定義
-        return $this ->belongsToMany(subCategories::class,'post_id','sub_category_id');// →create_post_sub_categories_table.phpから外部キーの確認して記述
+        // リレーションの定義 多対多
+        return $this ->belongsToMany(SubCategory::class,'posts_sub_categories','post_id','sub_category_id');// →create_post_sub_categories_table.phpから外部キーの確認して記述
     }
 
-        // リレーションの基本的な書き方
-    // public function 関数名(){
-    //  return $this ->リレーションの種類(クラス名::class,'外部キー','主のキー');}
-    //  →リレーションの種類とは:1対多or多対多
-    //  →外部キーとは:相手テーブルと繋げるためのカラム
-    //  →主のキーとは:リレーションを組むときに基準となる側のカラム
-    //               大体はテーブルのidカラムのこと
+        // 多対多のリレーションの基本的な書き方
+        // public function 関数名(){
+        // return $this->belongsToMany(相手モデル::class, '中間テーブル名', '自分の外部キー', '相手の外部キー');
+        // }
+        // →外部キーとは:相手テーブルと繋げるためのカラム
+        // →主のキーとは:リレーションを組むときに基準となる側のカラム
+        //              大体はテーブルのidカラムのこと
 
 
 
