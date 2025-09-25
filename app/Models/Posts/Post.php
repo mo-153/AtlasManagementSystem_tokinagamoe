@@ -25,7 +25,18 @@ class Post extends Model
 
     public function subCategories(){
         // リレーションの定義
+        return $this ->belongsToMany(subCategories::class,'post_id','sub_category_id');// →create_post_sub_categories_table.phpから外部キーの確認して記述
     }
+
+        // リレーションの基本的な書き方
+    // public function 関数名(){
+    //  return $this ->リレーションの種類(クラス名::class,'外部キー','主のキー');}
+    //  →リレーションの種類とは:1対多or多対多
+    //  →外部キーとは:相手テーブルと繋げるためのカラム
+    //  →主のキーとは:リレーションを組むときに基準となる側のカラム
+    //               大体はテーブルのidカラムのこと
+
+
 
     // コメント数
     public function commentCounts($post_id){
