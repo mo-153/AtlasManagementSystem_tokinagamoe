@@ -28,7 +28,7 @@ class PostsController extends Controller
 
 
         $validated = $request->validate([
-            'post_category_id' => 'required|',
+            'post_category_id' => 'required|string',
             'post_title' => 'required|string|max:100',
             'post_body' => 'required|string|max:2000',
         ],
@@ -37,11 +37,11 @@ class PostsController extends Controller
         [
             'post_category_id.required' => 'カテゴリーは必ず入力してください。',
 
-            'post_title' => 'タイトルは必ず入力してください',
-            'post_title' => 'タイトルは100文字以内で入力してください',
+            'post_title.required' => 'タイトルは必ず入力してください',
+            'post_title.max' => 'タイトルは100文字以内で入力してください',
 
-            'post_body' => '投稿内容は必ず入力してください',
-            'post_body' => '投稿内容は2000文字以内で入力してください',
+            'post_body.required' => '投稿内容は必ず入力してください',
+            'post_body.max' => '投稿内容は2000文字以内で入力してください',
         ]);
     }
 
@@ -92,6 +92,18 @@ class PostsController extends Controller
     }
 
     public function postEdit(Request $request){
+        $validated = $request->validate([
+            'post_title' =>'required|string|max:100',
+            'post_body' => 'required|string|max:2000',
+        ],
+        [
+            'post_title.required'=>'タイトルは必ず入力してください。',
+            'post_title.max'=>'タイトルは100字以内で入力してください。',
+
+            'post_body.required' => '投稿内容は必ず入力してください',
+            'post_body.max' => '投稿内容は2000文字以内で入力してください',
+        ]);
+
         Post::where('id', $request->post_id)->update([
             'post_title' => $request->post_title,
             'post' => $request->post_body,

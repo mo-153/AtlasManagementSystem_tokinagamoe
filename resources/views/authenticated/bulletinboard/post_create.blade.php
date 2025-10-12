@@ -6,7 +6,10 @@
       <select class="w-100" form="postCreate" name="post_category_id">
         @foreach($main_categories as $main_category)
         <optgroup label="{{ $main_category->main_category }}">
+
         <!-- サブカテゴリー表示 -->
+
+
         </optgroup>
         @endforeach
       </select>

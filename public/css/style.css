@@ -213,7 +213,11 @@ li {
   border-radius: 5px;
   border: #FF3300;
   font-size: small;
+}
 
+.edit_error {
+  font-size: 12px;
+  color: red;
 }
 
 /* 掲示板 コメント */
