@@ -64,7 +64,6 @@ class RegisterUserRequest extends FormRequest
         // →必須項目、講師（国語、数学、英語）、生徒以外無効
         // ・password
         // →必須項目、8文字以上30文字以下、確認用と一致しているか
-
         // ・required:入力必須
         // ・string:文字列
         // ・^[ア-ケー]+$/u:カタカナ
@@ -85,7 +84,6 @@ class RegisterUserRequest extends FormRequest
         // →確認用と一致しているか
 
 
-
         return [
           'over_name' => 'required|string|max:10',
           'under_name' => 'required|string|max:10',
@@ -98,9 +96,9 @@ class RegisterUserRequest extends FormRequest
           'password' => 'required|min:8|max:30|confirmed',
         ];
       }
+
           public function messages() {
             return[
-
               'over_name.required' => '姓は入力必須項目です。',
               'over_name.max'=> '姓は10文字以内で入力してください。',
 
