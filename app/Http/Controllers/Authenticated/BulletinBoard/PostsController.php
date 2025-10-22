@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Authenticated\BulletinBoard;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Categories\MainCategory;
 use App\Models\Categories\SubCategory;
 use App\Models\Posts\Post;
@@ -11,7 +12,6 @@ use App\Models\Posts\PostComment;
 use App\Models\Posts\Like;
 use App\Models\Users\User;
 use App\Http\Requests\BulletinBoard\PostFormRequest;
-use Auth;
 
 class PostsController extends Controller
 {
@@ -50,24 +50,38 @@ class PostsController extends Controller
 
 
     public function show(Request $request){
-        $posts = Post::with('user', 'postComments')->get();
+        $posts = Post::with('user')->withCount('postComments')->get();
         $categories = MainCategory::get();
         $like = new Like;
         $post_comment = new Post;
+        $baseQuery=Post::with('user')->withCount('postComments');
+        // ↑$baseQuery=Post::with('user')->withCount('postComments')の記述意味
+        // $baseQuery:データベースの呼び出し
+        // Post::with():どのテーブル(モデル)かを指定し関連データも一緒取得
+        // withCount():関連データの件数を数える
+        // 'postComments': Post.phpで定義しているpublic function postComments()のリレーションメソッド名を記述している
+
         if(!empty($request->keyword)){
-            $posts = Post::with('user', 'postComments')
+            $posts = $baseQuery
+            // Post::with('user', 'postComments')
             ->where('post_title', 'like', '%'.$request->keyword.'%')
             ->orWhere('post', 'like', '%'.$request->keyword.'%')->get();
         }else if($request->category_word){
             $sub_category = $request->category_word;
-            $posts = Post::with('user', 'postComments')->get();
+            $posts = $baseQuery->get();
+            // Post::with('user', 'postComments')->get();
         }else if($request->like_posts){
             $likes = Auth::user()->likePostId()->get('like_post_id');
-            $posts = Post::with('user', 'postComments')
+            $posts = $baseQuery
+            // Post::with('user', 'postComments')
             ->whereIn('id', $likes)->get();
         }else if($request->my_posts){
-            $posts = Post::with('user', 'postComments')
+            $posts = $baseQuery
+            // Post::with('user', 'postComments')
             ->where('user_id', Auth::id())->get();
+        }
+        if (!$request->keyword && !$request->category_word && !$request->my_posts){
+            $posts=$baseQuery->get();
         }
         return view('authenticated.bulletinboard.posts', compact('posts', 'categories', 'like', 'post_comment'));
     }

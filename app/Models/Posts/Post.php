@@ -3,7 +3,8 @@
 namespace App\Models\Posts;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Users\User;
+use App\Models\Posts\PostComment;
 class Post extends Model
 {
     // const UPDATED_AT = null;
@@ -16,11 +17,11 @@ class Post extends Model
     ];
 
     public function user(){
-        return $this->belongsTo('App\Models\Users\User');
+        return $this->belongsTo('App\Models\Users\User','user_id','id');
     }
 
     public function postComments(){
-        return $this->hasMany('App\Models\Posts\PostComment');
+        return $this->hasMany('App\Models\Posts\PostComment','post_id','id');
     }
 
     public function subCategories(){
@@ -39,7 +40,12 @@ class Post extends Model
 
 
     // コメント数
-    public function commentCounts($post_id){
-        return Post::with('postComments')->find($post_id)->postComments();
+    public function PostCounts(){
+        // return Post::with('postComments')->find($post_id)->postComments();
+        return $this->hasMany(PostCount::class,'post_id');
     }
+
+    // ↑Post.phpからpost_idを取得、そのあとコメントのあった投稿を取得してからコメントされた数をカウントするという意味
+    // ↑find()メソッド：DBに特定条件のデータを取得
+    //  with()メソッド：
 }

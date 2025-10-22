@@ -51,6 +51,12 @@ $(function () {
     });
   });
 
+  function CommentCounts() {
+    $.get("/api/comment-counts", function (data) {
+      $("#postComments").text(data.postCounts);
+    });
+  }
+
   // 掲示板投稿の編集のモーダル表示
   $('.edit-modal-open').on('click', function () {
     $('.js-modal').fadeIn();

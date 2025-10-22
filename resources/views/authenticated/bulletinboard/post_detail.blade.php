@@ -46,8 +46,8 @@
           @foreach($post->postComments as $comment)
           <div class="comment_area border-top">
             <p>
-              <span>{{ $comment->commentUser($comment->user_id)->over_name }}</span>
-              <span>{{ $comment->commentUser($comment->user_id)->under_name }}</span>さん
+              <span>{{ $comment->user?->over_name }}</span>
+              <span>{{ $comment->user?->under_name }}</span>さん
             </p>
             <p>{{ $comment->comment }}</p>
           </div>

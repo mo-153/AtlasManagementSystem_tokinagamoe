@@ -5,7 +5,7 @@ namespace App\Models\Posts;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Users\User;
-
+use App\Models\Posts\Post;
 class PostComment extends Model
 {
     const UPDATED_AT = null;
@@ -18,10 +18,11 @@ class PostComment extends Model
     ];
 
     public function post(){
-        return $this->belongsTo('App\Models\Posts\Post');
+        return $this->belongsTo('App\Models\Posts\Post','post_id','id');
     }
 
-    public function commentUser($user_id){
-        return User::where('id', $user_id)->first();
+    public function user(){
+        // return User::where('id', $user_id)->first();
+        return $this->belongsTo(User::class,'user_id','id');// ←追記した
     }
 }
