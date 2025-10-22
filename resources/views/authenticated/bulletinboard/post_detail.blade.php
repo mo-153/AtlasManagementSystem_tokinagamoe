@@ -46,8 +46,10 @@
           @foreach($post->postComments as $comment)
           <div class="comment_area border-top">
             <p>
-              <span>{{ $comment->user?->over_name }}</span>
-              <span>{{ $comment->user?->under_name }}</span>さん
+              @if ($comment->user)
+               <span>{{$comment->user->over_name }}</span>
+               <span>{{$comment->user->under_name }}</span>
+              @endif
             </p>
             <p>{{ $comment->comment }}</p>
           </div>
