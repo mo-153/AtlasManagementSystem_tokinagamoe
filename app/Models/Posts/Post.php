@@ -4,6 +4,7 @@ namespace App\Models\Posts;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Users\User;
+use App\Models\Posts\Like;
 use App\Models\Posts\PostComment;
 class Post extends Model
 {
@@ -45,7 +46,8 @@ class Post extends Model
         return $this->hasMany(PostCount::class,'post_id');
     }
 
-    // ↑Post.phpからpost_idを取得、そのあとコメントのあった投稿を取得してからコメントされた数をカウントするという意味
-    // ↑find()メソッド：DBに特定条件のデータを取得
-    //  with()メソッド：
+    // いいね数
+    public function likes(){
+        return $this->hasMany(Like::class,'like_post_id','id');
+    }
 }

@@ -50,16 +50,22 @@ class PostsController extends Controller
 
 
     public function show(Request $request){
-        $posts = Post::with('user')->withCount('postComments')->get();
+        $posts = Post::with('user')->withCount('postComments')
+        ->withCount('likes')
+        ->get();
+        // ↑withCount('likes')の記述もれ
+
         $categories = MainCategory::get();
         $like = new Like;
         $post_comment = new Post;
-        $baseQuery=Post::with('user')->withCount('postComments');
+        $baseQuery=Post::with('user')->withCount('postComments')
+        ->withCount('likes');
         // ↑$baseQuery=Post::with('user')->withCount('postComments')の記述意味
         // $baseQuery:データベースの呼び出し
         // Post::with():どのテーブル(モデル)かを指定し関連データも一緒取得
         // withCount():関連データの件数を数える
         // 'postComments': Post.phpで定義しているpublic function postComments()のリレーションメソッド名を記述している
+        // withCount('リレーション名');
 
         if(!empty($request->keyword)){
             $posts = $baseQuery
@@ -161,14 +167,31 @@ class PostsController extends Controller
     }
 
     public function myBulletinBoard(){
-        $posts = Auth::user()->posts()->get();
+        // ↑myBulletinBoardメソッド「ログインユーザーの投稿一覧」
+        $posts = Auth::user()->posts()->withCount('likes')->get();
+        // ↑ログインユーザーの全ての投稿を取得して、投稿のいいねをカウントを取得
         $like = new Like;
         return view('authenticated.bulletinboard.post_myself', compact('posts', 'like'));
     }
 
+
+
+
     public function likeBulletinBoard(){
-        $like_post_id = Like::with('users')->where('like_user_id', Auth::id())->get('like_post_id')->toArray();
-        $posts = Post::with('user')->whereIn('id', $like_post_id)->get();
+        // ↑likeBulletinBoardメソッド「ログインユーザーのいいねした投稿一覧」
+
+        // $like_post_id = Like::with('users')->where('like_user_id', Auth::id())->get('like_post_id')->toArray();
+        // ↑Like::with('users')でLikeレコードを取得するときに「user」を一緒に取得
+        // whereで「条件で絞り込む」
+        // →Likeテーブルのlike_user_idに一致するログインユーザーを取得
+
+        $like_post_id = Like::where('like_user_id', Auth::id())->pluck('like_post_id')->toArray();
+
+
+        $posts = Post::with('user')->whereIn('id', $like_post_id)->withCount('likes')->get();
+        // whereIn('テーブルのカラム名',カラム名の中から$○○に一致するもの)
+        // whereInは「複数条件の絞り込み」
+
         $like = new Like;
         return view('authenticated.bulletinboard.post_like', compact('posts', 'like'));
     }
@@ -177,25 +200,47 @@ class PostsController extends Controller
         $user_id = Auth::id();
         $post_id = $request->post_id;
 
-        $like = new Like;
+        // $like = new Like;
 
-        $like->like_user_id = $user_id;
-        $like->like_post_id = $post_id;
-        $like->save();
+        // $like->like_user_id = $user_id;
+        // $like->like_post_id = $post_id;
+        // $like->save();
+        $like=Like::firstOrCreate([
+            'like_user_id'=>$user_id,'like_post_id'=>$post_id
+        ]);
+        // ↑firstOrCreateは「いいねの重複を防ぐ」もの
+        // user_idでどのユーザーがpost_idでどの投稿にいいねをしたのか確認しして、いいねが重複しないようにしている
 
-        return response()->json();
+        $post=Post::withCount('likes')->find($post_id);
+        // ↑withCount('リレーション')で「リレーションの件数を取得」
+        // find($引数)でデータベースから引数のレコードを取得
+        // =>データベースからpost_idを取得、その投稿についているいいねの総数を取得
+
+        $likesCount=$post->likes_count;
+        return response()->json(['likesCount'=>$likesCount]);
     }
 
     public function postUnLike(Request $request){
         $user_id = Auth::id();
         $post_id = $request->post_id;
 
-        $like = new Like;
+        // $like = new Like;
 
-        $like->where('like_user_id', $user_id)
-             ->where('like_post_id', $post_id)
-             ->delete();
+        // $like->where('like_user_id', $user_id)
+        // ->where('like_post_id', $post_id)
+        // ->delete();
 
-        return response()->json();
+        $deleted=Like::where('like_user_id',$user_id)
+        ->where('like_post_id',$post_id)
+        ->delete();
+        // ↑データベースに「like_user_id が$user_idかつlike_post_idが$post_id のレコードを見つけて削除する」という記述
+
+        $post=Post::withCount('likes')->find($post_id);
+        // ↑withCount('リレーション')で「リレーションの件数を取得」
+        // find($引数)でデータベースから引数のレコードを取得
+        // =>データベースからpost_idを取得、その投稿についているいいねの総数を取得
+
+        $likesCount=$post->likes_count;
+        return response()->json(['likesCount'=>$likesCount]);
     }
 }

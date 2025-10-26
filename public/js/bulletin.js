@@ -12,8 +12,10 @@ $(function () {
     $(this).addClass('un_like_btn');
     $(this).removeClass('like_btn');
     var post_id = $(this).attr('post_id');
-    var count = $('.like_counts' + post_id).text();
-    var countInt = Number(count);
+    // var count = $('.like_counts' + post_id).text();
+    // var countInt = Number(count);
+
+    // ajaxとは、リロードしないでサーバーとデータのやり取りをするもの
     $.ajax({
       headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
       method: "post",
@@ -21,12 +23,17 @@ $(function () {
       data: {
         post_id: $(this).attr('post_id'),
       },
+
+      // (res)とはレスポンス
     }).done(function (res) {
+      // 成功したときの処理
       console.log(res);
-      $('.like_counts' + post_id).text(countInt + 1);
-    }).fail(function (res) {
-      console.log('fail');
-    });
+      $('.like_counts' + post_id).text(res.likesCount);
+    })
+      // 失敗したときの処理
+      .fail(function (res) {
+        console.log('fail');
+      });
   });
 
   $(document).on('click', '.un_like_btn', function (e) {
@@ -34,8 +41,8 @@ $(function () {
     $(this).removeClass('un_like_btn');
     $(this).addClass('like_btn');
     var post_id = $(this).attr('post_id');
-    var count = $('.like_counts' + post_id).text();
-    var countInt = Number(count);
+    // var count = $('.like_counts' + post_id).text();
+    // var countInt = Number(count);
 
     $.ajax({
       headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -45,7 +52,7 @@ $(function () {
         post_id: $(this).attr('post_id'),
       },
     }).done(function (res) {
-      $('.like_counts' + post_id).text(countInt - 1);
+      $('.like_counts' + post_id).text(res.likesCount);
     }).fail(function () {
 
     });
@@ -56,6 +63,7 @@ $(function () {
       $("#postComments").text(data.postCounts);
     });
   }
+
 
   // 掲示板投稿の編集のモーダル表示
   $('.edit-modal-open').on('click', function () {
