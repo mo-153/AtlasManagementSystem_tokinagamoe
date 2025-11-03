@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use App\Models\Posts\Like;
 use App\Models\Posts\Post;
+use App\Models\Users\Subjects;
 use Auth;
 
 class User extends Authenticatable
@@ -68,7 +69,7 @@ class User extends Authenticatable
     }
 
     public function subjects(){
-        return $this->belongsToMany(Subjects::class);// リレーションの定義
+        return $this->belongsToMany(Subjects::class,'subject_users','subject_id','user_id');// リレーションの定義
         // Subject::classとは=App/Models/Subjectsになる
         // →ユーザーと科目のリレーション(多対多)を記述するため
     }
