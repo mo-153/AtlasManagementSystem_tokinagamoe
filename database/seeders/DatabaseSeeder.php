@@ -15,8 +15,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         // Register your seeders here
-        $this->call([
+        $this->call([SubjectsTableSeeder::class]);
+        }
+        // ↑SubjectsTableSeeder.phpに記述したコードを実行するように指示出しをしている
+        // $this->call([seeder名::class]);
 
-        ]);
-    }
 }
