@@ -72,6 +72,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Subjects::class,'subject_users','user_id','subject_id');// リレーションの定義
         // Subject::classとは=App/Models/Subjectsになる
         // →ユーザーと科目のリレーション(多対多)を記述するため
+        // belongsToMany(Models名::class,'中間テーブル名','自分の外部キー','相手の外部キー')
+
     }
 
     // いいねしているかどうか
