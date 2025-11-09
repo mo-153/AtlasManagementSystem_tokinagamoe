@@ -24,8 +24,15 @@
                 <p><a href="/logout"><img src="{{ asset('image/logout.png') }}" class = "logout-icon">ログアウト</a></p>
                 <p><a href="{{ route('calendar.general.show',['user_id' => Auth::id()]) }}"><img src="{{ asset('image/reservation.png') }}" class = "reservation-icon">スクール予約</a></p>
 
-                <p><a href="{{ route('calendar.admin.show',['user_id' => Auth::id()]) }}"><img src="{{ asset('image/reservation_confirmation.png') }}" class = "confirmation-icon">スクール予約確認</a></p>
+
+                <!-- 教師のみが見える項目 -->
+                 @if( Auth::user()->role == 1 || Auth::user()->role == 2 || Auth::user()->role == 3)
+                 <!-- ↑ログインユーザーでroleが「1 or 2 or 3」の場合にサイドバーへ表示される -->
+
+                 <p><a href="{{ route('calendar.admin.show',['user_id' => Auth::id()]) }}"><img src="{{ asset('image/reservation_confirmation.png') }}" class = "confirmation-icon">スクール予約確認</a></p>
                 <p><a href="{{ route('calendar.admin.setting',['user_id' => Auth::id()]) }}"><img src="{{ asset('image/school_reservation.png') }}" class = "calendar-icon">スクール枠登録</a></p>
+                @endif
+
                 <p><a href="{{ route('post.show') }}"><img src="{{ asset('image/post.png') }}" class = "post-icon">掲示板</a></p>
                 <p><a href="{{ route('user.show') }}"><img src="{{ asset('image/user.png') }}" class = "user-icon">ユーザー検索</a></p>
             </div>
