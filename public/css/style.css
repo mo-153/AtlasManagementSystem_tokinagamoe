@@ -53,6 +53,47 @@ li {
   color: #FFF;
 }
 
+
+
+/* サイドバーのアイコン */
+.top-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.logout-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.reservation-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.confirmation-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.calendar-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.post-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.user-icon {
+  width: 20px;
+  height: 20px;
+}
+
+
+
+
 /* トップページ */
 .user_status {
   border-radius: 10px;
