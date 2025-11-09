@@ -97,7 +97,7 @@ class RegisterUserRequest extends FormRequest
             'required_if:role,1,2,3',
             'array', // 配列であることを確認
         ],
-        'subject.*' => [
+        'subject.*' => [// *は「配列の全ての要素」に対してルールを適用するためのもの
             'nullable',
             'integer', // IDが整数であることを保証
             'exists:subjects,id', // データベースの subjects テーブルに存在するかチェック
