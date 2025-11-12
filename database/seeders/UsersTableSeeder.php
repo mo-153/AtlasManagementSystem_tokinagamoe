@@ -3,6 +3,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;// ←パスワードをハッシュ化するときに必要なuse宣言
 
 class UsersTableSeeder extends Seeder
