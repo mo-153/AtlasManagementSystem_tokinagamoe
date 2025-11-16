@@ -139,9 +139,30 @@ class PostsController extends Controller
 
 
     public function mainCategoryCreate(Request $request){
+
+        // バリデーションルール
+        // ・main_category
+        // →必須項目、100文字以内、文字列型、同じ名前のメインカテゴリーは登録できない
+        // 'unique:テーブル名,カラム名'
+
+
+        // 追記
+        $validated = $request->validate([
+            'main_category' =>'required|max:100|string|unique:main_categories,main_category',
+        ],
+        [
+            'main_category.required' => 'メインカテゴリーは入力必須です。',
+            'main_category.max' => '100文字以内で入力してください。',
+            'main_category.unique' => '同じ名前のメインカテゴリーは登録できません。',
+        ]);
+
+
+
         MainCategory::create(['main_category' => $request->main_category_name]);
         return redirect()->route('post.input');
     }
+
+
 
     public function commentCreate(Request $request){
 

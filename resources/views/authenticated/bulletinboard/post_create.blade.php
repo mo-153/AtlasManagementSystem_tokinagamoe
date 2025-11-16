@@ -1,24 +1,21 @@
 <x-sidebar>
-<div class="post_create_container d-flex">
-  <div class="post_create_area border w-50 m-5 p-5">
-    <div class="">
-      <p class="mb-0">カテゴリー</p>
-      <select class="w-100" form="postCreate" name="post_category_id">
-        @foreach($main_categories as $main_category)
-        <optgroup label="{{ $main_category->main_category }}">
-
-        <!-- サブカテゴリー表示 -->
-
-
-        </optgroup>
-        @endforeach
-      </select>
-    </div>
-    <div class="mt-3">
-      @if($errors->first('post_title'))
-      <span class="error_message">{{ $errors->first('post_title') }}</span>
-      @endif
-      <p class="mb-0">タイトル</p>
+  <div class="post_create_container d-flex">
+    <div class="post_create_area border w-50 m-5 p-5">
+      <div class="">
+        <p class="mb-0">カテゴリー</p>
+        <select class="w-100" form="postCreate" name="post_category_id">
+          @foreach($main_categories as $main_category)
+          <optgroup label="{{ $main_category->main_category }}">
+            <!-- サブカテゴリー表示 -->
+             </optgroup>
+            @endforeach
+          </select>
+      </div>
+      <div class="mt-3">
+        @if($errors->first('post_title'))
+        <span class="error_message">{{ $errors->first('post_title') }}</span>
+        @endif
+        <p class="mb-0">タイトル</p>
       <input type="text" class="w-100" form="postCreate" name="post_title" value="{{ old('post_title') }}">
     </div>
     <div class="mt-3">
@@ -42,6 +39,16 @@
         <input type="submit" value="追加" class="w-100 btn btn-primary p-0" form="mainCategoryRequest">
       </div>
       <!-- サブカテゴリー追加 -->
+
+      <!-- サブカテゴリー追記↓ -->
+      @if( Auth::user()->role == 1 || Auth::user()->role == 2 || Auth::user()->role == 3)
+       <div class= "subcategory">
+         <p class="m-0">サブカテゴリー</p>
+         <input type="text" class="w-100" name="main_category_name" form="mainCategoryRequest">
+         <input type="submit" value="追加" class="w-100 btn btn-primary p-0" form="mainCategoryRequest">
+        </div>
+        @endif
+
       <form action="{{ route('main.category.create') }}" method="post" id="mainCategoryRequest">{{ csrf_field() }}</form>
     </div>
   </div>
