@@ -7,6 +7,9 @@
           @foreach($main_categories as $main_category)
           <optgroup label="{{ $main_category->main_category }}">
             <!-- サブカテゴリー表示 -->
+            <option value = "kokugo">国語</option>
+            <option value = "suugaku" >数学</option>
+            <option value = "eigo" >英語</option>
              </optgroup>
             @endforeach
           </select>
