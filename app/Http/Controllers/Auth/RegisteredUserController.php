@@ -59,10 +59,10 @@ class RegisteredUserController extends Controller
             ]);
 
 
-            // if(in_array($validated['role'],[1,2,3]))
-            //     {
-            //         $user->subjects()->attach($validated['subject'] ?? []);
-            // }
+            if(in_array($validated['role'],[1,2,3]))
+                {
+                    $user->subjects()->attach($validated['subject'] ?? []);
+            }
             // ↑
             // ・「in_array(値,配列)」の基本的な形
             //    値:調べたいもの、配列:その中に値があるかどうか

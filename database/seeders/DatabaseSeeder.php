@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
         // Register your seeders here
         $this->call([SubjectsTableSeeder::class]);
         $this->call([UsersTableSeeder::class]);
+        $this->call([MainCategoriesTableSeeder::class]);
         }
         // ↑SubjectsTableSeeder.php,UsersTableSeeder.phpに記述したコードを実行するように指示出しをしている
         // $this->call([seeder名::class]);
