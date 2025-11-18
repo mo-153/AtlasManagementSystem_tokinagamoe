@@ -3,13 +3,13 @@
     <div class="post_create_area border w-50 m-5 p-5">
       <div class="">
         <p class="mb-0">カテゴリー</p>
-        <select class="w-100" form="postCreate" name="post_category_id">
+        <select class="w-100" form="postCreate" name="post_category_id" class = "post_category_id">
           @foreach($main_categories as $main_category)
-          <optgroup label="{{ $main_category->main_category }}">
+          <optgroup label="{{ $main_category->main_category }}" class = "category_name">
             <!-- サブカテゴリー表示 -->
-            <option value = "kokugo">国語</option>
-            <option value = "suugaku" >数学</option>
-            <option value = "eigo" >英語</option>
+               <option value = "kokugo" class = "subject_name">国語</option>
+               <option value = "suugaku" class = "subject_name">数学</option>
+               <option value = "eigo" class = "subject_name">英語</option>
              </optgroup>
             @endforeach
           </select>
@@ -42,14 +42,13 @@
         <input type="submit" value="追加" class="w-100 btn btn-primary p-0" form="mainCategoryRequest">
       </div>
       <!-- サブカテゴリー追加 -->
-
-      <!-- サブカテゴリー追記↓ -->
       @if( Auth::user()->role == 1 || Auth::user()->role == 2 || Auth::user()->role == 3)
        <div class= "subcategory">
          <p class="m-0">サブカテゴリー</p>
-         <input type="text" class="w-100" name="main_category_name" form="mainCategoryRequest">
-         <input type="submit" value="追加" class="w-100 btn btn-primary p-0" form="mainCategoryRequest">
+         <input type="text" class="w-100" name="sub_category_name" form="subCategoryRequest">
+         <input type="submit" value="追加" class="w-100 btn btn-primary p-0" form="subCategoryRequest">
         </div>
+
         @endif
 
       <form action="{{ route('main.category.create') }}" method="post" id="mainCategoryRequest">{{ csrf_field() }}</form>
