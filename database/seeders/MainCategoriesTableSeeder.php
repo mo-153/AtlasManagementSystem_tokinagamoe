@@ -18,12 +18,7 @@ class MainCategoriesTableSeeder extends Seeder
     {
         DB::table('main_categories')->insert([
         [
-            'main_category' => '学習',
-            'created_at' => now(),
-            'updated_at' => now(),
-        ],
-        [
-            'main_category' => '勉強',
+            'main_category' => '教科',
             'created_at' => now(),
             'updated_at' => now(),
         ],
