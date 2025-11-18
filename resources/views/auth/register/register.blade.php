@@ -33,7 +33,6 @@
                 <div class ="error"><span>{{$message}}</span></div>
                 @enderror
             </div>
-
             <div class="" style="width:140px">
               <label class="d-block m-0" style="font-size:13px">メイ</label>
               <div class="border-bottom border-primary" style="width:140px;">

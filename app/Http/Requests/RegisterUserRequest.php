@@ -93,17 +93,17 @@ class RegisterUserRequest extends FormRequest
           'sex' => 'required|in:1,2,3',
           'birth_day'=> 'required|after_or_equal:2000-01-01|before_or_equal:today',// →old_year/old_month/old_dayをまとめて「birth_day」としている
           'role' =>'required|in:1,2,3,4',
-          'subject' => [
-            'required_if:role,1,2,3',
-            'array', // 配列であることを確認
-        ],
-        'subject.*' => [// *は「配列の全ての要素」に対してルールを適用するためのもの
-            'nullable',
-            'integer', // IDが整数であることを保証
-            'exists:subjects,id', // データベースの subjects テーブルに存在するかチェック
-        ],
+        //   'subject' => [
+        //     'required_if:role,1,2,3',
+        //     'array', // 配列であることを確認
+        // ],
+        // 'subject.*' => [// *は「配列の全ての要素」に対してルールを適用するためのもの
+        //     'nullable',
+        //     'integer', // IDが整数であることを保証
+        //     'exists:subjects,id', // データベースの subjects テーブルに存在するかチェック
+        // ],
           'password' => 'required|min:8|max:30|confirmed',
-        ];
+      ];
       }
 
           public function messages() {
