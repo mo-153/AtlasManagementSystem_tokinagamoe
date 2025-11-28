@@ -43,7 +43,7 @@
       </div>
       <div>
         @if($user->role == 4)
-        <span>選択科目 :</span>
+        <span>選択科目 :{{$user->subjects}}</span>
         @endif
       </div>
     </div>
@@ -90,7 +90,6 @@
           <div class="selected_engineer">
             <label>選択科目</label>
           </div>
-        </div>
       </div>
       <div>
         <input type="reset" value="リセット" form="userSearchRequest">
