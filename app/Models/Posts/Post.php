@@ -25,6 +25,9 @@ class Post extends Model
         return $this->hasMany('App\Models\Posts\PostComment','post_id','id');
     }
 
+    public function mainCategory(){
+        return $this -> belongsTo(mainCategory::class,'main_category_id');
+    }
     public function subCategories(){
         // リレーションの定義 多対多
         return $this ->belongsToMany(SubCategory::class,'posts_sub_categories','post_id','sub_category_id');// →create_post_sub_categories_table.phpから外部キーの確認して記述

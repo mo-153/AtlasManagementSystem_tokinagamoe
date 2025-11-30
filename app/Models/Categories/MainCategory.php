@@ -17,6 +17,10 @@ class MainCategory extends Model
         return $this ->hasMany(subCategories::class,'main_category_id','id');
     }
 
+    public function posts(){
+        return $this ->hasMany(post::class,'user_id','id');
+    }
+
     // リレーションの基本的な書き方
     // public function 関数名(){
     //  return $this ->リレーションの種類(クラス名::class,'外部キー','主のキー');}
