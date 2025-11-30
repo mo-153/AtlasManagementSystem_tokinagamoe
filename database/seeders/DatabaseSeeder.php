@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
         $this->call([SubjectsTableSeeder::class]);
         $this->call([UsersTableSeeder::class]);
         $this->call([MainCategoriesTableSeeder::class]);
+        $this->call([SubCategoriesTableSeeder::class]);
+
         }
         // ↑SubjectsTableSeeder.php,UsersTableSeeder.phpに記述したコードを実行するように指示出しをしている
         // $this->call([seeder名::class]);

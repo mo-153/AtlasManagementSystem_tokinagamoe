@@ -174,6 +174,7 @@ return array(
     'Cron\\MonthField' => $vendorDir . '/dragonmantank/cron-expression/src/Cron/MonthField.php',
     'Database\\Seeders\\DatabaseSeeder' => $baseDir . '/database/seeders/DatabaseSeeder.php',
     'Database\\Seeders\\MainCategoriesTableSeeder' => $baseDir . '/database/seeders/MainCategoriesTableSeeder.php',
+    'Database\\Seeders\\SubCategoriesTableSeeder' => $baseDir . '/database/seeders/SubCategoriesTableSeeder.php',
     'Database\\Seeders\\SubjectsTableSeeder' => $baseDir . '/database/seeders/SubjectsTableSeeder.php',
     'Database\\Seeders\\UsersTableSeeder' => $baseDir . '/database/seeders/UsersTableSeeder.php',
     'DateError' => $vendorDir . '/symfony/polyfill-php83/Resources/stubs/DateError.php',
