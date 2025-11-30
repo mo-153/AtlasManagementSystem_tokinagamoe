@@ -53,9 +53,16 @@
             @csrf
        <div class= "subcategory">
          <p class="m-0">サブカテゴリー</p>
-         <input type="text" class="w-100" name="sub_category_name" form="subCategoryRequest">
-         <input type="submit" value="追加" class="w-100 btn btn-primary p-0" form="subCategoryRequest">
-
+         <select name="" id="" class="w-100">
+           <optgroup>
+            <option value="---">---</option>
+             <option value="国語">国語</option>
+             <option value="数学">数学</option>
+             <option value="英語">英語</option>
+           </optgroup>
+           <input type="text" class="w-100" name="sub_category_name" form="subCategoryRequest">
+           <input type="submit" value="追加" class="w-100 btn btn-primary p-0" form="subCategoryRequest">
+         </select>
          @error('sub_category_name')
          <div class = "error"><span>{{$message}}</span></div>
         @enderror
