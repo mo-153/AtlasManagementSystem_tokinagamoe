@@ -41,9 +41,6 @@ class PostsController extends Controller
             // ・main_category_id
             // →必須項目、登録されているメインカテゴリーか
 
-                'main_category_name' =>'required|max:100|string|unique:main_categories,main_category',
-                'maine_category_id' =>'required|exists:main_categories,id',
-            // →'unique:テーブル名(main_categories),カラム名(main_category)
         ],
 
         // バリデーションメッセージ
@@ -56,12 +53,6 @@ class PostsController extends Controller
             'post_body.required' => '投稿内容は必ず入力してください',
             'post_body.max' => '投稿内容は2000文字以内で入力してください',
 
-            'main_category_name.required' => 'メインカテゴリーは入力必須です。',
-            'main_category_name.max' => '100文字以内で入力してください。',
-            'main_category_name.unique' => 'そのメインカテゴリーは既に登録されています。',
-
-            'maine_category_id.required'=>'メインカテゴリーは入力必須です。',
-            'maine_category_id.exists:main_categories,id'=>'登録されたメインカテゴリーと一致しません',
         ]);
         MainCategory::create([
             'post_id' => $request->post_id,
@@ -76,7 +67,7 @@ class PostsController extends Controller
 
 
 
-// 検索部分
+    // 検索部分
     public function show(Request $request){
         $keyword = '%'.$request->keyword.'%';
         $posts = Post::with('user')->withCount('postComments')
@@ -104,74 +95,80 @@ class PostsController extends Controller
             ->where('post_title', 'like', '%'.$request->keyword.'%')
             ->orWhere('post', 'like', '%'.$request->keyword.'%')
             ->orWhereHas('user', function ($query) use ($keyword) {
-            $query->where('over_name', 'like', $keyword)
-            ->orWhere('under_name','like',$keyword);
-        })
-        // ↑orWhereの次は「orWhereHas」で記述を続ける
-        // ↑orWhereHas('user', function ($query) use ($keyword)
-        // user：Postモデルにあるpublic function user() のメソッド名
-        // function ($query):匿名関数
-        // ($keyword):変数名
+                $query->where('over_name', 'like', $keyword)
+                ->orWhere('under_name','like',$keyword);
+            })
+            // ↑orWhereの次は「orWhereHas」で記述を続ける
+            // ↑orWhereHas('user', function ($query) use ($keyword)
+            // user：Postモデルにあるpublic function user() のメソッド名
+            // function ($query):匿名関数
+            // ($keyword):変数名
             ->get();
-            }
+        }
         // ↑検索時キーワード入力後post_title,postに含まれる投稿を表示
 
         if($request->category_word){
             $sub_category = $request->category_word;
             $posts = $baseQuery
             // ->where('sub_category','like','%'.$request->category_word.'%');
-              // Post::with('user', 'postComments')
-              ->where('sub_category', $category_word)//←完全一致:where('カラム名',値)
-              ->get();
-        }
-        // ↑検索時カテゴリーワードを入力してsub_categoryに含まれているワードを表示
-
-        if($request->like_posts){
-            $likes = Auth::user()->likePostId()->get('like_post_id');
-            $posts = $baseQuery
             // Post::with('user', 'postComments')
-            ->whereIn('id', $likes)->get();
+            ->where('sub_category', $category_word)//←完全一致:where('カラム名',値)
+            ->get();
         }
-        // ↑ログインユーザーがいいねをした投稿を表示
+    // ↑検索時カテゴリーワードを入力してsub_categoryに含まれているワードを表示
 
-        if($request->my_posts){
-            $posts = $baseQuery
-            // Post::with('user', 'postComments')
-            ->where('user_id', Auth::id())->get();
-        }
-        // ↑ログインユーザーの投稿を表示
-
-        if (!$request->keyword && !$request->category_word && !$request->my_posts){
-            $posts=$baseQuery->get();
-        }
-        // ↑キーワード検索でpost_title,postに当てはまるもの、カテゴリー検索でsub_categoryに当てはまるもの、いいねした投稿、自分の投稿を表示させる
-
-        return view('authenticated.bulletinboard.posts', compact('posts', 'categories', 'like', 'post_comment'));
+    if($request->like_posts){
+        $likes = Auth::user()->likePostId()->get('like_post_id');
+        $posts = $baseQuery
+        // Post::with('user', 'postComments')
+        ->whereIn('id', $likes)->get();
     }
+    // ↑ログインユーザーがいいねをした投稿を表示
 
-
-
-
-
-
-    public function postDetail($post_id){
-        $post = Post::with('user', 'postComments')->findOrFail($post_id);
-        return view('authenticated.bulletinboard.post_detail', compact('post'));
+    if($request->my_posts){
+        $posts = $baseQuery
+        // Post::with('user', 'postComments')
+        ->where('user_id', Auth::id())->get();
     }
+    // ↑ログインユーザーの投稿を表示
 
-    public function postInput(){
-        $main_categories = MainCategory::get();
-        return view('authenticated.bulletinboard.post_create', compact('main_categories'));
+    if (!$request->keyword && !$request->category_word && !$request->my_posts){
+        $posts=$baseQuery->get();
     }
+    // ↑キーワード検索でpost_title,postに当てはまるもの、カテゴリー検索でsub_categoryに当てはまるもの、いいねした投稿、自分の投稿を表示させる
 
-    public function postCreate(PostFormRequest $request){
-        $post = Post::create([
-            'user_id' => Auth::id(),
-            'post_title' => $request->post_title,
-            'post' => $request->post_body
-        ]);
-        return redirect()->route('post.show');
+    return view('authenticated.bulletinboard.posts', compact('posts', 'categories', 'like', 'post_comment'));
+}
+
+
+
+
+
+
+public function postDetail($post_id){
+    $post = Post::with('user', 'postComments')->findOrFail($post_id);
+    return view('authenticated.bulletinboard.post_detail', compact('post'));
+}
+
+public function postInput(){
+    $main_categories = MainCategory::get();
+    return view('authenticated.bulletinboard.post_create', compact('main_categories'));
+}
+
+
+public function postCreate(PostFormRequest $request){
+    $post = Post::create([
+        'user_id' => Auth::id(),
+        'post_title' => $request->post_title,
+        'post' => $request->post_body,
+        'main_category_id' => $request->main_category_id,
+    ]);
+    $sub_category_ids = $request->input('sub_category_ids');
+    if(!empty($sub_categories)){
+        $post->subCategories->sync($sub_categories_ids);
     }
+    return redirect()->route('post.show',$post->id);
+}
 
     public function postEdit(Request $request){
         $validated = $request->validate([
@@ -201,17 +198,19 @@ class PostsController extends Controller
 
 
     public function mainCategoryCreate(Request $request){
-
-
-
-
         MainCategory::create([
             'main_category' => $request->main_category_name,
-            $request->main_category_id,
         ]);
-        return redirect()->route('post.input',['id'=>$mainCategory->id]);
+        return redirect()->route('post.input')->withInput();
     }
 
+        public function subCategoryCreate(Request $request){
+        SubCategory::create([
+            'main_category_id' => $request->main_category_id,
+            'sub_category' => $request->sub_category_name,
+        ]);
+        return redirect()->route('post.input')->withInput();
+    }
 
 
     public function commentCreate(Request $request){
