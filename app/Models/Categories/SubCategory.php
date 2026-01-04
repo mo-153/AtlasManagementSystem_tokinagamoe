@@ -8,19 +8,20 @@ class SubCategory extends Model
 {
     const UPDATED_AT = null;
     const CREATED_AT = null;
+    protected $table = 'sub_categories';
     protected $fillable = [
         'main_category_id',
         'sub_category',
     ];
     public function mainCategory(){
         // リレーションの定義 1対多
-        return $this ->belongsTo(mainCategory::class,'main_category_id','id');
+        return $this ->belongsTo(MainCategory::class,'main_category_id','id');
     }
 
 
     public function posts(){
         // リレーションの定義 多対多
-        return $this ->belongsToMany(post::class,'sub_category_id','post_id');
+        return $this ->hasMany(Post::class,'posts_sub_categories','sub_category_id','post_id');
     }// →create_post_sub_categories_table.phpから外部キーの確認して記述
 
 

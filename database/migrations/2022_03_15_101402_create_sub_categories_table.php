@@ -14,13 +14,16 @@ class CreateSubCategoriesTable extends Migration
     public function up()
     {
         Schema::create('sub_categories', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
-            $table->integer('main_category_id')->unsigned()->index()->comment('メインカテゴリーID');
+            $table->id();
+            $table->unsignedBigInteger('main_category_id');
             $table->string('sub_category', 60)->index()->comment('サブカテゴリー名');
             $table->timestamps(); // created_at と updated_at を自動で追加
 
-            // 外部キー制約の追加
-            $table->foreign('main_category_id')->references('id')->on('main_categories')->onDelete('cascade');
+            // 外部キー制約の追加（明示的に定義）
+            $table->foreign('main_category_id')
+              ->references('id')
+              ->on('main_categories')
+              ->onDelete('cascade');
         });
     }
 
@@ -31,6 +34,10 @@ class CreateSubCategoriesTable extends Migration
      */
     public function down()
     {
+        // テーブル削除前に外部キー制約を削除する
+    Schema::table('sub_categories', function (Blueprint $table) {
+        $table->dropForeign(['main_category_id']);
+    });
         Schema::dropIfExists('sub_categories');
     }
 }

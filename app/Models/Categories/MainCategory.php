@@ -14,11 +14,11 @@ class MainCategory extends Model
 
     public function subCategories(){
         // リレーションの定義 1対多の関係
-        return $this ->hasMany(subCategories::class,'main_category_id','id');
+        return $this ->hasMany(SubCategory::class,'main_category_id','id');
     }
 
     public function posts(){
-        return $this ->hasMany(post::class,'user_id','id');
+        return $this ->hasMany(post::class,'main_category_id','id');
     }
 
     // リレーションの基本的な書き方

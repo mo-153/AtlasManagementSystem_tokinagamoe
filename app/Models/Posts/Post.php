@@ -4,6 +4,8 @@ namespace App\Models\Posts;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Users\User;
+use App\Models\Categories\MainCategory;
+use App\Models\Categories\SubCategory;
 use App\Models\Posts\Like;
 use App\Models\Posts\PostComment;
 class Post extends Model
@@ -15,6 +17,7 @@ class Post extends Model
         'user_id',
         'post_title',
         'post',
+        'sub_category_id',
     ];
 
     public function user(){
@@ -26,11 +29,12 @@ class Post extends Model
     }
 
     public function mainCategory(){
-        return $this -> belongsTo(mainCategory::class,'main_category_id');
+        return $this -> belongsTo(MainCategory::class,'main_category_id','id');
     }
-    public function subCategories(){
+    public function SubCategories(){
         // リレーションの定義 多対多
-        return $this ->belongsToMany(SubCategory::class,'posts_sub_categories','post_id','sub_category_id');// →create_post_sub_categories_table.phpから外部キーの確認して記述
+        return $this ->belongsToMany(SubCategory::class,'post_sub_categories','post_id','sub_category_id');
+        // →create_post_sub_categories_table.phpから外部キーの確認して記述
     }
 
         // 多対多のリレーションの基本的な書き方

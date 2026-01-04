@@ -14,16 +14,19 @@ class CreatePostSubCategoriesTable extends Migration
     public function up()
     {
         Schema::create('post_sub_categories', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedBigInteger('post_id')->index()->comment('投稿のid');
-            $table->integer('sub_category_id')->unsigned()->index()->comment('サブカテゴリーid');
-            $table->timestamp('created_at')->nullable()->comment('登録日時');
+        // post_id
+        $table->foreignId('post_id')
+              ->constrained('posts')
+              ->onDelete('cascade');
 
-            // 外部キー制約の追加
-            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
-            $table->foreign('sub_category_id')->references('id')->on('sub_categories')->onDelete('cascade');
-        });
-    }
+        // sub_category_id
+        $table->foreignId('sub_category_id')
+              ->constrained('sub_categories')
+              ->onDelete('cascade');
+
+        // 複合主キーの定義
+        $table->primary(['post_id','sub_category_id']);
+    });    }
 
     /**
      * Reverse the migrations.
@@ -32,6 +35,10 @@ class CreatePostSubCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('post_sub_categories');
-    }
+         Schema::table('post_sub_categories', function (Blueprint $table) {
+        $table->dropForeign(['post_id']);
+        $table->dropForeign(['sub_category_id']);
+    });
+         Schema::dropIfExists('post_sub_categories');
+  }
 }

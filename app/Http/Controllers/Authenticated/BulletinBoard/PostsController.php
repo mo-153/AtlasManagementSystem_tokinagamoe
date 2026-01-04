@@ -5,66 +5,18 @@ namespace App\Http\Controllers\Authenticated\BulletinBoard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use App\Models\Categories\MainCategory;
 use App\Models\Categories\SubCategory;
 use App\Models\Posts\Post;
 use App\Models\Posts\PostComment;
 use App\Models\Posts\Like;
 use App\Models\Users\User;
+
 use App\Http\Requests\BulletinBoard\PostFormRequest;
 
 class PostsController extends Controller
 {
-
-    public function store(Request $request){
-
-        // バリデーションルール
-        // ・post_category_id
-        // →必須項目、登録されているサブカテゴリか
-        // ・post_title
-        // →必須項目、文字列型、最大100文字
-        // ・post_body
-        // →必須項目、文字列型、最大2000文字
-
-
-        $validated = $request->validate([
-            'post_category_id' => 'required|string',
-            'post_title' => 'required|string|max:100',
-            'post_body' => 'required|string|max:2000',
-
-
-
-            // バリデーションルール
-            // ・main_category
-            // →必須項目、100文字以内、文字列型、同じ名前のメインカテゴリーは登録できない
-            // 'unique:テーブル名,カラム名'
-            // ・main_category_id
-            // →必須項目、登録されているメインカテゴリーか
-
-        ],
-
-        // バリデーションメッセージ
-        [
-            'post_category_id.required' => 'カテゴリーは必ず入力してください。',
-
-            'post_title.required' => 'タイトルは必ず入力してください',
-            'post_title.max' => 'タイトルは100文字以内で入力してください',
-
-            'post_body.required' => '投稿内容は必ず入力してください',
-            'post_body.max' => '投稿内容は2000文字以内で入力してください',
-
-        ]);
-        MainCategory::create([
-            'post_id' => $request->post_id,
-            'user_id' => Auth::id(),
-            'main_category_name' => $request->main_category_name
-        ]);
-        return redirect()->route('main.category.create', ['id' => $request->post_id]);
-
-    }
-
-
-
 
 
     // 検索部分
@@ -115,60 +67,59 @@ class PostsController extends Controller
             ->where('sub_category', $category_word)//←完全一致:where('カラム名',値)
             ->get();
         }
-    // ↑検索時カテゴリーワードを入力してsub_categoryに含まれているワードを表示
+        // ↑検索時カテゴリーワードを入力してsub_categoryに含まれているワードを表示
 
-    if($request->like_posts){
-        $likes = Auth::user()->likePostId()->get('like_post_id');
-        $posts = $baseQuery
-        // Post::with('user', 'postComments')
-        ->whereIn('id', $likes)->get();
+        if($request->like_posts){
+            $likes = Auth::user()->likePostId()->get('like_post_id');
+            $posts = $baseQuery
+            // Post::with('user', 'postComments')
+            ->whereIn('id', $likes)->get();
+        }
+        // ↑ログインユーザーがいいねをした投稿を表示
+
+        if($request->my_posts){
+            $posts = $baseQuery
+            // Post::with('user', 'postComments')
+            ->where('user_id', Auth::id())->get();
+        }
+        // ↑ログインユーザーの投稿を表示
+
+        if (!$request->keyword && !$request->category_word && !$request->my_posts){
+            $posts=$baseQuery->get();
+        }
+        // ↑キーワード検索でpost_title,postに当てはまるもの、カテゴリー検索でsub_categoryに当てはまるもの、いいねした投稿、自分の投稿を表示させる
+
+        return view('authenticated.bulletinboard.posts', compact('posts', 'categories', 'like', 'post_comment'));
     }
-    // ↑ログインユーザーがいいねをした投稿を表示
 
-    if($request->my_posts){
-        $posts = $baseQuery
-        // Post::with('user', 'postComments')
-        ->where('user_id', Auth::id())->get();
+
+
+
+
+
+    public function postDetail($post_id){
+        $post = Post::with('user', 'postComments')->findOrFail($post_id);
+        return view('authenticated.bulletinboard.post_detail', compact('post'));
     }
-    // ↑ログインユーザーの投稿を表示
 
-    if (!$request->keyword && !$request->category_word && !$request->my_posts){
-        $posts=$baseQuery->get();
+    public function postInput(){
+        $main_categories = MainCategory::with('subCategories')->get();
+        return view('authenticated.bulletinboard.post_create', compact('main_categories'));
     }
-    // ↑キーワード検索でpost_title,postに当てはまるもの、カテゴリー検索でsub_categoryに当てはまるもの、いいねした投稿、自分の投稿を表示させる
 
-    return view('authenticated.bulletinboard.posts', compact('posts', 'categories', 'like', 'post_comment'));
-}
+    public function postCreate(PostFormRequest $request){
+        $post = Post::create([
+                'user_id' => Auth::id(),
+                'post_title' => $request->post_title,
+                'post' => $request->post_body,
+            ]);
 
+            // post_sub_categoriesに保存する↓（中間テーブル）
+            $post->subCategories()->attach($request->post_category_id);
 
+            return redirect()->route('post.show');
+        }
 
-
-
-
-public function postDetail($post_id){
-    $post = Post::with('user', 'postComments')->findOrFail($post_id);
-    return view('authenticated.bulletinboard.post_detail', compact('post'));
-}
-
-public function postInput(){
-    $main_categories = MainCategory::get();
-    return view('authenticated.bulletinboard.post_create', compact('main_categories'));
-}
-
-
-public function postCreate(PostFormRequest $request){
-    $post = Post::create([
-        'user_id' => Auth::id(),
-        'post_title' => $request->post_title,
-        'post' => $request->post_body,
-        'main_category_id' => $request->main_category_id,
-    ]);
-    $sub_category_ids = $request->input('sub_category_ids');
-    if(!empty($sub_categories)){
-        $post->subCategories->sync($sub_categories_ids);
-    }
-    return redirect()->route('post.show',$post->id);
-}
 
     public function postEdit(Request $request){
         $validated = $request->validate([
@@ -198,21 +149,49 @@ public function postCreate(PostFormRequest $request){
 
 
     public function mainCategoryCreate(Request $request){
+        $request->validate([
+        'main_category_name' => 'required|string|max:100|unique:main_categories,main_category', // main_categoriesテーブルのmain_categoryカラムで一意性をチェック
+        ],[
+        'main_category_name.required' => 'メインカテゴリーは入力必須です。',
+        'main_category_name.max'      => '100文字以内で入力してください。',
+        'main_category_name.unique'   => 'そのメインカテゴリー名は既に登録されています。',
+    ]);
+
         MainCategory::create([
             'main_category' => $request->main_category_name,
         ]);
-        return redirect()->route('post.input')->withInput();
+        //  return redirect()->route('post.input')->withInput();
+        return redirect()->back();
+
+        $main_categories = MainCategory::with('subCategories')->get();
+        $sub_categories = SubCategory::get();
+        return view('authenticated.bullentinboard.post_create',compact('main_categories','sub_categories'));
     }
 
+
+
         public function subCategoryCreate(Request $request){
+        $request->validate([
+        'main_category_id' => 'required|exists:main_categories,id',
+        'sub_category_name' => 'required|string|max:100|unique:sub_categories,sub_category', // main_categoriesテーブルのmain_categoryカラムで一意性をチェック
+    ], [
+        'main_category_id.required' => 'メインカテゴリーを選択してください。',
+        'main_category_id.exists'   => '選択したメインカテゴリーは存在しません。',
+        'sub_category_name.required'     => 'サブカテゴリーは入力必須です。',
+        'sub_category_name.max'          => '100文字以内で入力してください。',
+        'sub_category_name.unique'       => 'そのサブカテゴリー名は既に登録されています。',
+    ]);
         SubCategory::create([
             'main_category_id' => $request->main_category_id,
             'sub_category' => $request->sub_category_name,
         ]);
-        return redirect()->route('post.input')->withInput();
+        // return redirect()->route('post.input')->withInput();
+        return redirect()->back();
+
+        $main_categories = MainCategory::with('subCategories')->get();
+        $sub_categories = subCategory::get();
+        return view('authenticated.bullentinboard.post_create',compact('main_categories','sub_categories'));
     }
-
-
     public function commentCreate(Request $request){
 
         // バリデーションルール

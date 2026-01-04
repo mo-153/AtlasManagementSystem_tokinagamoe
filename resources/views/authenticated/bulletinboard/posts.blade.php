@@ -39,9 +39,9 @@
       <ul>
         @foreach($categories as $category)
         <li class="main_categories" category_id="{{ $category->id }}"><span>{{ $category->main_category }}<span>
-          <input type="submit" name = "subcategory_posts" class = "subcategory_post" value ="国語" form="categorySearchRequest">
-          <input type="submit" name = "subcategory_posts" class = "subcategory_post" value ="数学" form="categorySearchRequest">
-          <input type="submit" name = "subcategory_posts" class = "subcategory_post" value ="英語" form="categorySearchRequest">
+          @foreach($category->subCategories as $sub_category)
+          <input type="submit" name = "subcategory_posts" class = "subcategory_post" value ="{{ $sub_category->sub_category}}" from="postSearchRequest">
+          @endforeach
       </li>
         @endforeach
       </ul>
