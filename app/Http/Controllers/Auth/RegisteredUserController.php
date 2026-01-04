@@ -52,6 +52,7 @@ class RegisteredUserController extends Controller
                 'sex' => $validated['sex'],
                 'birth_day' => $validated['birth_day'],
                 'role' => $validated['role'],
+                // 'subject'=>$validated['subject'],
                 'password' => bcrypt($validated['password']),
                 // ↑bcrypt()でパスワードハッシュ化関数。セキュリティ上必ずハッシュ化して保存すると安全！
                 // 「'カラム名'=$validated['値']」
