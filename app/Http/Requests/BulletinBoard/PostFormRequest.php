@@ -31,13 +31,6 @@ class PostFormRequest extends FormRequest
             'post_body' => 'required|string|max:2000',
         ];
 
-        // // 講師ユーザーのみサブカテゴリーの表示されるから別でバリデーションルールを実装する↓
-        if (Auth::check() && in_array(Auth::user()->role, [1, 2, 3]))
-            {
-        // // 講師ユーザーのバリデーションルール↓
-            $rules['main_category_id']  = 'required|integer|exists:sub_categories,id';
-            }
-
         return $rules;
 }
 
