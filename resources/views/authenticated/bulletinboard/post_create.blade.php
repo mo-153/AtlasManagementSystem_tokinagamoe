@@ -43,27 +43,27 @@
           <form action="{{ route('main.category.create') }}" method="post" id="mainCategoryRequest">
             @csrf
             <div class="">
-              @error('main_category_name')
-              <div class = "error"><span>{{$message}}</span></div>
-              @enderror
               <p class="m-0">メインカテゴリー</p>
               <input type="text" class="w-100" name="main_category_name" value = "{{ old('main_category_name') }}">
               <input type="submit" value="追加" class="w-100 btn btn-primary p-0" form="mainCategoryRequest">
+              @error('main_category_name')
+              <div class = "main_category_error"><span>{{$message}}</span></div>
+              @enderror
             </div>
           </form>
           <!-- サブカテゴリー追加 -->
           <div class= "subcategory">
             <form action="{{ route('sub.category.create') }}" method="POST" id="subCategoryRequest">
               @csrf
-              <p class="m-0">サブカテゴリー</p>
+              @error('sub_category_name')
+              <div class = "sub_category_error"><span>{{$message}}</span></div>
+              @enderror
+              <p class="mt-5 mb-0">サブカテゴリー</p>
               <select name="main_category_id" class="w-100">
                 @foreach($main_categories as $main_category)
                 <option value="{{ $main_category->id }}">{{ $main_category->main_category }}</option>
                 @endforeach
               </select>
-              @error('sub_category_name')
-              <div class = "error"><span>{{$message}}</span></div>
-              @enderror
               <input type="text" class="w-100" name="sub_category_name" value = "{{ old('sub_category_name') }}">
               <input type="submit" value="追加" class="w-100 btn btn-primary p-0" form="subCategoryRequest">
             </form>
