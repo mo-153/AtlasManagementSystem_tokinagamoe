@@ -212,6 +212,7 @@ li {
   color: red;
 }
 
+
 /* 掲示板 詳細画面 */
 .contributor {
   font-size: 12px;
@@ -338,6 +339,21 @@ li {
   background: #999;
   color: #FFF;
 }
+
+.subcategory_post {
+  display: flex;
+  flex-direction: row;
+  margin: 5px;
+  font-size: 12px;
+  appearance: none;
+  padding: 0 5px;
+  border: none;
+  background: #999;
+  color: #FFF;
+  border-radius: 5px;
+}
+
+
 
 .main_categories span,
 .sub_categories li input {

@@ -89,6 +89,16 @@ class PostsController extends Controller
         }
         // ↑キーワード検索でpost_title,postに当てはまるもの、カテゴリー検索でsub_categoryに当てはまるもの、いいねした投稿、自分の投稿を表示させる
 
+        if($request->subcategory_posts){
+            $sub_category_id= $request->subcategory_posts;
+
+            $posts = $baseQuery->whereHas('SubCategories',function($query) use ($sub_category_id){
+                // ↑whereHas:持っているデータだけを絞り込む
+             $query->where('sub_category_id',$sub_category_id);
+            })->get();
+        }
+        // ↑サブカテゴリーの検索
+
         return view('authenticated.bulletinboard.posts', compact('posts', 'categories', 'like', 'post_comment'));
     }
 
