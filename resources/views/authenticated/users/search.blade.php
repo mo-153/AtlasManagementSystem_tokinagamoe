@@ -43,7 +43,11 @@
       </div>
       <div>
         @if($user->role == 4)
-        <span>選択科目 :{{$user->subjects}}</span>
+
+        <span>選択科目 :</span>
+        @foreach($user->subjects as $subject)
+        <span> {{ $subject->subject }}</span>
+        @endforeach
         @endif
       </div>
     </div>
@@ -89,6 +93,10 @@
           </div>
           <div class="selected_engineer">
             <label>選択科目</label>
+            <label><input type="checkbox" name="subject_id">国語</label>
+            <label><input type="checkbox" name="subject_id">英語</label>
+            <label><input type="checkbox" name="subject_id">数学</label>
+
           </div>
       </div>
       <div>
