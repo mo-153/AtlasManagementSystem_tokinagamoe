@@ -92,11 +92,21 @@
             </select>
           </div>
           <div class="selected_engineer">
-            <label>選択科目</label>
-            <label><input type="checkbox" name="subject_id">国語</label>
+
+
+          <label>選択科目</label>
+          @foreach($subject_lists as $subject)
+          <input type="checkbox" name = "subject_id[]" value ="{{ $subject->id}}" >
+            {{ $subject->subject }}
+          </input>
+          @endforeach
+
+
+
+            <!-- <label><input type="checkbox" name="subject_id">国語</label>
             <label><input type="checkbox" name="subject_id">英語</label>
             <label><input type="checkbox" name="subject_id">数学</label>
-
+ -->
           </div>
       </div>
       <div>

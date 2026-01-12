@@ -20,13 +20,17 @@ class UsersController extends Controller
         $updown = $request->updown;
         $gender = $request->sex;
         $role = $request->role;
-        $subjects = null;// ここで検索時の科目を受け取る
+        $subjects = $request->subject_id;// ここで検索時の科目を受け取る
         $userFactory = new SearchResultFactories();
         $users = $userFactory->initializeUsers($keyword, $category, $updown, $gender, $role, $subjects);
-        $subjects = Subjects::all();
-        return view('authenticated.users.search', compact('users', 'subjects'));
+        $subject_lists = Subjects::all();
+        return view('authenticated.users.search', compact('users', 'subject_lists'));
     }
 
+
+
+
+    // ↓laravel オブジェクト配列変換記述する
     public function userProfile($id){
         $user = User::with('subjects')->findOrFail($id);
         $subject_lists = Subjects::all();
@@ -37,5 +41,25 @@ class UsersController extends Controller
         $user = User::findOrFail($request->user_id);
         $user->subjects()->sync($request->subjects);
         return redirect()->route('user.profile', ['id' => $request->user_id]);
+    }
+
+
+
+    // ユーザー検索
+    public function index(Request $request){
+        $query = User::with('subjects');
+        // ↑ベースのクエリを作成（選択科目情報を取得）
+
+        if($request->subject_id){
+            $subjects =$request->subject_id;
+
+            $query -> whereHas('subjects',function($q) use ($subjects){
+                $q->whereIn('subjects.id',$subjects);
+            });
+        }
+        $users = $query->get();
+        $subject_lists = Subject::all();
+
+        return view('authenticated.users.search',compact('users','subject_lists'));
     }
 }
