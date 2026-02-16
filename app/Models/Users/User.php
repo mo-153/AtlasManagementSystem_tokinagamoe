@@ -63,6 +63,7 @@ class User extends Authenticatable
     public function calendars(){
         return $this->belongsToMany('App\Models\Calendars\Calendar', 'calendar_users', 'user_id', 'calendar_id')->withPivot('user_id', 'id');
     }
+    // ↑withPivot：中間テーブルから特定のカラムを取得するときに記述する()内が取得したいカラム名
 
     public function reserveSettings(){
         return $this->belongsToMany('App\Models\Calendars\ReserveSettings', 'reserve_setting_users', 'user_id', 'reserve_setting_id')->withPivot('id');

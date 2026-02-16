@@ -14,5 +14,33 @@
       <input type="submit" class="btn btn-primary" value="予約する" form="reserveParts">
     </div>
   </div>
+
+
+
+<!-- ↓予約キャンセルモーダル -->
+<div class="modal js-modal">
+  <div class="modal__bg js-modal-close"></div>
+  <div class="modal__content">
+    <form action="{{ route('deleteParts') }}" method="post">
+      @csrf
+      <div class="w-100">
+        <div class="modal-inner-title w-50 m-auto">
+          <p>予約日：<span class = "modal-reserve-date"></span>
+          </p>
+        </div>
+
+        <div class="modal-inner-body w-50 m-auto pt-3 pb-3">
+          <p>時間：<span class = "modal-reserve-time"></span></p>
+          <p>上記の予約をキャンセルしてもよろしいですか？</p>
+        </div>
+
+        <div class="w-50 m-auto cancel-modal-btn d-flex justify-content-between">
+          <button class="js-modal-close btn btn-primary d-inline-block" href="">閉じる</button>
+          <input type="hidden" class="cancel-modal-hidden" name="reserve_id" value="">
+          <input type="submit" class="btn btn-danger d-block" value="キャンセル">
+        </div>
+        <!-- ↑btn-primary	青色、btn-danger	赤色で色を付けいている -->
+      </div>
+</form>
 </div>
 </x-sidebar>

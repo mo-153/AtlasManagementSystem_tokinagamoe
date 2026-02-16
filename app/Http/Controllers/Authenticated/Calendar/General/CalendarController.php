@@ -1,4 +1,5 @@
 <?php
+// スクール予約ページ
 
 namespace App\Http\Controllers\Authenticated\Calendar\General;
 
@@ -16,6 +17,18 @@ class CalendarController extends Controller
     public function show(){
         $calendar = new CalendarView(time());
         return view('authenticated.calendar.general.calendar', compact('calendar'));
+    }
+
+    // 予約をキャンセル
+    public function deleteParts(Request $request){
+        $reserve_id = $request->reserve_id;
+        // reserve_idを取得
+        $user = Auth::user();
+        // DBからreserve_setting_usersテーブルにあるid($reserve_id)を取得して削除している
+        DB::table('reserve_setting_users')
+        ->where('id',$reserve_id)
+        ->delete();
+        return back();
     }
 
     public function reserve(Request $request){
