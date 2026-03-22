@@ -38,50 +38,62 @@ class CalendarView{
       foreach($days as $day){
         $startDay = $this->carbon->copy()->format("Y-m-01");
         $toDay = $this->carbon->copy()->format("Y-m-d");
+        $past_day = $day->everyDay()<Carbon::now()->format("Y-m-d");
 
+        // ↓ここで過去日か確認している
         if($startDay <= $day->everyDay() && $toDay >= $day->everyDay()){
 
-        // ↓過去日をグレーアウトにする
-          $html[] = '<td class="past-day border">';
-        }else{
-          $html[] = '<td class="border '.$day->getClassName().'">';
-        }
-        $html[] = $day->render();
+          // ↓過去日をグレーアウトにする
+            $html[] = '<td class="past-day border">';
+            }else{
+              $html[] = '<td class="border '.$day->getClassName().'">';
+            }
+              $html[] = $day->render();
 
-        if(in_array($day->everyDay(), $day->authReserveDay())){
-          $reservePart = $day->authReserveDate($day->everyDay())->first()->setting_part;
-          if($reservePart == 1){
-            $reservePart = "リモ1部";
-          }else if($reservePart == 2){
-            $reservePart = "リモ2部";
-          }else if($reservePart == 3){
-            $reservePart = "リモ3部";
-          }
-          if($startDay <= $day->everyDay() && $toDay >= $day->everyDay()){
-            $html[] = '<p class="m-auto p-0 w-75" style="font-size:12px"></p>';
-            $html[] = '<input type="hidden" name="getPart[]" value="" form="reserveParts">';
-          }else{
-            $html[] = '<button type="button" class="btn btn-danger p-0 w-75 cancel-modal-open" style="font-size:12px" ' .
-            'reserve_date="'. $day->everyDay() . '" ' .
-            'reserve_time="'. $reservePart . '" ' .
-            'reserve_id="' . $day->authReserveDate($day->everyDay())->first()->pivot->id . '"> ' .
-            $reservePart .'</button>';
-            $html[] = '<input type="hidden" name="getPart[]" value="" form="reserveParts">';
-          }
-        }else{
-          $html[] = $day->selectPart($day->everyDay());
-        }
-        $html[] = $day->getDate();
-        $html[] = '</td>';
-      }
-      $html[] = '</tr>';
-    }
-    $html[] = '</tbody>';
-    $html[] = '</table>';
-    $html[] = '</div>';
-    $html[] = '<form action="/reserve/calendar" method="post" id="reserveParts">'.csrf_field().'</form>';
-    $html[] = '<form action="/delete/calendar" method="post" id="deleteParts">'.csrf_field().'</form>';
 
+
+              // ↓予約があるかどうか
+              // 過去日、未来日に予約がされている場合、リモ1/2/3を表示させる
+              if(in_array($day->everyDay(), $day->authReserveDay())){
+                $reservePart = $day->authReserveDate($day->everyDay())->first()->setting_part;
+                if($reservePart == 1){
+                  $reservePart = "リモ1部";
+                  }else if($reservePart == 2){
+                    $reservePart = "リモ2部";
+                    }else if($reservePart == 3){
+                      $reservePart = "リモ3部";
+                      }
+
+                      // ↓予約がされているかと過去日か確認している
+                      if($startDay <= $day->everyDay() && $toDay >= $day->everyDay()){
+                        $html[] = '<p class="m-auto p-0 w-75" style="font-size:12px">'. $reservePart .'</p>';
+                        // ↑'.変数名.'で記述するルールらしい
+                        }else{
+                      $html[] = '<button type="button" class="btn btn-danger p-0 w-75 cancel-modal-open" style="font-size:12px" ' .
+                      'reserve_date="'. $day->everyDay() . '" ' .
+                      'reserve_time="'. $reservePart . '" ' .
+                      'reserve_id="' . $day->authReserveDate($day->everyDay())->first()->pivot->id . '"> ' .
+                      $reservePart .'</button>';
+                        }
+                      $html[] = '<input type="hidden" name="getPart[]" value="" form="reserveParts">';
+                      }else{
+                        // ↓過去日に予約がないとき
+                        if($startDay <= $day->everyDay() && $toDay >= $day ->everyDay()){
+                          $html[] = '<p class = "m-auto p- w-75" style="font-size:12px"> 受付終了 </p>';
+                      }else{
+                        $html[] = $day->selectPart($day->everyDay());
+                        }
+                      }
+                        $html[] = $day->getDate();
+                        $html[] = '</td>';
+                        }
+                        $html[] = '</tr>';
+                        }
+                        $html[] = '</tbody>';
+                        $html[] = '</table>';
+                        $html[] = '</div>';
+                        $html[] = '<form action="/reserve/calendar" method="post" id="reserveParts">'.csrf_field().'</form>';
+                        $html[] = '<form action="/delete/calendar" method="post" id="deleteParts">'.csrf_field().'</form>';
     return implode('', $html);
   }
 
