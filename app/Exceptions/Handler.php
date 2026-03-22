@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Throwable;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Session\TokenMismatchException;// ←タイムアウトエラーがでないようにするために追記
 
 class Handler extends ExceptionHandler
 {
@@ -48,8 +49,13 @@ class Handler extends ExceptionHandler
      *
      * @throws \Exception
      */
+
+    // ↓タイムアウトエラーにならないようにログイン画面へ飛ぶようにする
     public function render($request, Throwable $exception)
     {
+        if($exception instanceof TokenMismatchException){
+            return redirect()->route('login')->with('message','タイムアウトしました。');
+        }
         return parent::render($request, $exception);
     }
 }
