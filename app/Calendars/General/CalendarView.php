@@ -66,10 +66,10 @@ class CalendarView{
 
                       // ↓予約がされているかと過去日か確認している
                       if($startDay <= $day->everyDay() && $toDay >= $day->everyDay()){
-                        $html[] = '<p class="m-auto p-0 w-75" style="font-size:12px">'. $reservePart .'</p>';
+                        $html[] = '<p class="p-0 w-75" style="font-size:12px">'. $reservePart .'</p>';
                         // ↑'.変数名.'で記述するルールらしい
                         }else{
-                      $html[] = '<button type="button" class="btn btn-danger p-0 w-75 cancel-modal-open" style="font-size:12px" ' .
+                      $html[] = '<button type="button" class="btn btn-danger w-75 cancel-modal-open" style="font-size:12px; padding: 0px;"' .
                       'reserve_date="'. $day->everyDay() . '" ' .
                       'reserve_time="'. $reservePart . '" ' .
                       'reserve_id="' . $day->authReserveDate($day->everyDay())->first()->pivot->id . '"> ' .
@@ -79,7 +79,7 @@ class CalendarView{
                       }else{
                         // ↓過去日に予約がないとき
                         if($startDay <= $day->everyDay() && $toDay >= $day ->everyDay()){
-                          $html[] = '<p class = "m-auto p- w-75" style="font-size:12px"> 受付終了 </p>';
+                          $html[] = '<p class = "p- w-75" style="font-size:12px; white-space: nowrap;"> 受付終了 </p>';
                           $html[] = '<input type="hidden" name="getPart[]" value="" form="reserveParts">';
                       }else{
                         $html[] = $day->selectPart($day->everyDay());
